@@ -1,1 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cat Carter — UI/UX Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:       #F4F2ED;
+      --fg:       #111111;
+      --muted:    #888880;
+      --accent1:  #FF3A3A;   /* punchy coral-red */
+      --accent2:  #C5FF47;   /* electric lime    */
+      --surface:  #ECEAE4;
+      --border:   #D8D5CC;
+      --nav-h:    64px;
+      --font-h:   'Space Grotesk', sans-serif;
+      --font-b:   'Inter', sans-serif;
+      --ease:     cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-b);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: var(--accent2); color: var(--fg); }
 
+    /* ─── NAV ──────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      background: var(--bg);
+      border-bottom: 1.5px solid var(--border);
+      z-index: 100;
+      transition: border-color 0.3s;
+    }
+    .nav-logo {
+      font-family: var(--font-h);
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent1); }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-links a {
+      font-family: var(--font-h);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+      color: var(--muted);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .nav-links a.active { color: var(--accent2); background: var(--fg); }
+
+    /* ─── PAGE SYSTEM ──────────────────────────────── */
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+    .page.active { display: block; animation: fadeUp 0.5s var(--ease) forwards; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SHARED LAYOUT ────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+    .section { padding: 80px 0; }
+    .tag {
+      display: inline-block;
+      font-family: var(--font-h);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--accent2);
+      color: var(--fg);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .tag.red { background: var(--accent1); color: #fff; }
+    h1, h2, h3 { font-family: var(--font-h); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+
+    /* ─── HOME PAGE ────────────────────────────────── */
+    #home { background: var(--bg); }
+    .hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: center;
+    }
+    .hero-left { padding: 80px 40px 80px 0; }
+    .hero-eyebrow {
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 2px;
+      background: var(--accent1);
+    }
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      margin-bottom: 24px;
+    }
+    .hero-title .highlight { color: var(--accent1); }
+    .hero-title .block {
+      display: block;
+      position: relative;
+    }
+    .hero-title .underlined {
+      position: relative;
+      display: inline-block;
+    }
+    .hero-title .underlined::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 0; right: 0;
+      height: 6px;
+      background: var(--accent2);
+      z-index: -1;
+      opacity: 0.8;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 440px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-h);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 14px 28px;
+      border-radius: 100px;
+      transition: all 0.22s var(--ease);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .btn-primary {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .btn-primary:hover {
+      background: var(--accent1);
+      border-color: var(--accent1);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--fg);
+    }
+    .btn-outline:hover {
+      border-color: var(--fg);
+      transform: translateY(-2px);
+    }
+    .hero-right {
+      position: relative;
+      height: 100%;
+      min-height: calc(100vh - var(--nav-h));
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-graphic {
+      position: relative;
+      width: 380px; height: 480px;
+      animation: heroFloat 6s ease-in-out infinite;
+    }
+    .hero-photo-wrap {
+      width: 100%; height: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    /* accent blobs behind photo */
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+    }
+    .hero-blob.b1 {
+      width: 260px; height: 260px;
+      background: var(--accent2);
+      bottom: -30px; right: -30px;
+      opacity: 0.7;
+    }
+    .hero-blob.b2 {
+      width: 140px; height: 140px;
+      background: var(--accent1);
+      top: -20px; left: -20px;
+      opacity: 0.6;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    /* home marquee strip */
+    .marquee-strip {
+      overflow: hidden;
+      border-top: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+      padding: 14px 0;
+      white-space: nowrap;
+      background: var(--fg);
+    }
+    .marquee-inner {
+      display: inline-flex;
+      gap: 48px;
+      animation: marquee 22s linear infinite;
+    }
+    .marquee-item {
+      font-family: var(--font-h);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+    }
+    .marquee-item .dot { color: var(--accent2); margin-left: 48px; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* featured work on home */
+    .home-work { padding: 80px 0; }
+    .section-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 48px;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .section-title { font-size: clamp(2rem, 4vw, 3rem); }
+    .link-arrow {
+      font-family: var(--font-h);
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted);
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    .link-arrow:hover { color: var(--fg); }
+    .link-arrow::after { content: '→'; font-size: 1rem; }
+
+    .home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .proj-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .proj-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    .proj-card-thumb {
+      aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-h);
+      font-size: 5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      position: relative;
+      overflow: hidden;
+    }
+    .proj-card-thumb.lime  { background: var(--accent2); color: var(--fg); }
+    .proj-card-thumb.coral { background: var(--accent1); color: #fff; }
+    .proj-card-body { padding: 24px; }
+    .proj-card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .proj-card-title {
+      font-family: var(--font-h);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .proj-card-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── ABOUT PAGE ──────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 80px;
+      align-items: start;
+      padding: 80px 0;
+    }
+    .about-left { position: sticky; top: calc(var(--nav-h) + 40px); }
+    .about-avatar {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem;
+      font-family: var(--font-h);
+      font-weight: 700;
+      color: var(--fg);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      border-radius: 18px;
+    }
+    .about-avatar::before {
+      content: '';
+      position: absolute;
+      bottom: -10px; right: -10px;
+      width: 80px; height: 80px;
+      background: var(--accent2);
+      border-radius: 50%;
+      opacity: 0.6;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .about-avatar::after {
+      content: '';
+      position: absolute;
+      top: -10px; left: -10px;
+      width: 60px; height: 60px;
+      background: var(--accent1);
+      border-radius: 50%;
+      opacity: 0.4;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .about-initials { position: relative; z-index: 2; }
+    .about-right {}
+    .about-intro {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-family: var(--font-h);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 32px;
+    }
+    .about-intro em { font-style: normal; color: var(--accent1); }
+    .about-body { font-size: 1rem; color: #444; line-height: 1.8; }
+    .about-body p + p { margin-top: 20px; }
+    .about-skills { margin-top: 48px; }
+    .about-skills h3 {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px; font-weight: 600;
+    }
+    .skill-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      font-family: var(--font-h);
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    .chip:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+    .about-education { margin-top: 48px; }
+    .edu-item {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 20px; align-items: start;
+      padding: 24px 0;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .edu-item:first-child { border-top: 1.5px solid var(--border); }
+    .edu-year {
+      font-family: var(--font-h);
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--muted); letter-spacing: 0.05em;
+      padding-top: 3px; white-space: nowrap;
+    }
+    .edu-name { font-family: var(--font-h); font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .edu-school { font-size: 0.9rem; color: var(--muted); }
+
+    /* ─── PROJECTS PAGE ───────────────────────────── */
+    .projects-hero { padding: 80px 0 40px; }
+    .projects-hero h1 { font-size: clamp(3rem, 6vw, 5rem); margin-bottom: 16px; }
+    .projects-hero p { font-size: 1.1rem; color: var(--muted); max-width: 520px; line-height: 1.7; }
+
+    .projects-list { padding-bottom: 80px; }
+    .case-study {
+      border-top: 1.5px solid var(--border);
+      padding: 64px 0;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 64px; align-items: center;
+    }
+    .case-study:last-child { border-bottom: 1.5px solid var(--border); }
+    .case-study.reverse { direction: rtl; }
+    .case-study.reverse > * { direction: ltr; }
+    .cs-meta {}
+    .cs-number {
+      font-family: var(--font-h);
+      font-size: 5rem; font-weight: 700;
+      letter-spacing: -0.05em;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .cs-title {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      margin-bottom: 16px;
+    }
+    .cs-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.75; margin-bottom: 24px; }
+    .cs-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .cs-tag {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 5px 12px;
+      border: 1.5px solid var(--border); border-radius: 100px;
+      color: var(--muted); font-family: var(--font-h);
+    }
+    .cs-visual {
+      aspect-ratio: 4/3;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-h); font-size: 4.5rem; font-weight: 700;
+      letter-spacing: -0.05em; overflow: hidden; position: relative;
+    }
+    .cs-visual.lime { background: var(--accent2); }
+    .cs-visual.coral { background: var(--accent1); color: #fff; }
+
+    /* ─── RESUME PAGE ─────────────────────────────── */
+    .resume-header { padding: 80px 0 40px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 24px; }
+    .resume-header h1 { font-size: clamp(3rem, 6vw, 5rem); }
+    .resume-body { padding-bottom: 80px; display: grid; grid-template-columns: 1fr 1.6fr; gap: 64px; align-items: start; }
+    .resume-sidebar {}
+    .resume-main {}
+    .resume-section { margin-bottom: 48px; }
+    .resume-section-label {
+      font-family: var(--font-h);
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .resume-item { margin-bottom: 28px; }
+    .resume-item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 6px; flex-wrap: wrap; }
+    .resume-item-title { font-family: var(--font-h); font-weight: 700; font-size: 1rem; }
+    .resume-item-date { font-size: 0.8rem; color: var(--muted); font-weight: 500; white-space: nowrap; }
+    .resume-item-sub { font-size: 0.9rem; color: var(--accent1); font-weight: 500; margin-bottom: 8px; font-family: var(--font-h); }
+    .resume-item-desc { font-size: 0.9rem; color: #555; line-height: 1.7; }
+    .skill-bar-list { display: flex; flex-direction: column; gap: 14px; }
+    .skill-bar-item {}
+    .skill-bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.85rem; margin-bottom: 6px; color: var(--fg);
+    }
+    .skill-bar-label span { color: var(--muted); font-size: 0.78rem; }
+    .skill-bar-track {
+      height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%; background: var(--fg); border-radius: 2px;
+      transition: width 1s var(--ease);
+    }
+    .skill-bar-fill.accent { background: var(--accent1); }
+    .contact-list { display: flex; flex-direction: column; gap: 12px; }
+    .contact-item {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.9rem; color: #444;
+    }
+    .contact-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ───────────────────────────────────── */
+    footer {
+      border-top: 1.5px solid var(--border);
+      padding: 32px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      font-size: 0.82rem; font-family: var(--font-h); font-weight: 600;
+      color: var(--muted); letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ─── CURSOR GLOW ──────────────────────────────── */
+    .cursor-glow {
+      position: fixed; pointer-events: none; z-index: 9999;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(197,255,71,0.08) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+    }
+
+
+    /* ─── HAMBURGER MENU ────────────────────────────── */
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; background: none; border: none; z-index: 101;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--fg); border-radius: 2px;
+      transition: all 0.3s var(--ease);
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ─── RESPONSIVE ───────────────────────────────── */
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .hero-left { padding: 60px 20px 60px 0; }
+      .hero-graphic { width: 300px; height: 380px; }
+      .about-grid { gap: 48px; }
+      .case-study { gap: 40px; }
+      .resume-body { gap: 40px; }
+    }
+    /* Mobile */
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        position: fixed; top: var(--nav-h); left: 0; right: 0;
+        background: var(--bg); border-bottom: 1.5px solid var(--border);
+        flex-direction: column; align-items: stretch;
+        padding: 16px 20px 24px; gap: 4px;
+        transform: translateY(-110%); opacity: 0;
+        transition: transform 0.35s var(--ease), opacity 0.3s;
+        z-index: 99; pointer-events: none;
+      }
+      .nav-links.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+      .nav-links a { padding: 12px 16px; font-size: 0.9rem; border-radius: 10px; color: var(--fg); }
+      nav { padding: 0 20px; }
+      .container { padding: 0 20px; }
+      .section { padding: 60px 0; }
+      .hero { grid-template-columns: 1fr; gap: 0; }
+      .hero-left { padding: 40px 0 32px; }
+      .hero-right { min-height: 340px; order: -1; }
+      .hero-graphic { width: 100%; max-width: 320px; height: 380px; }
+      .home-cards { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-left { position: static; }
+      .case-study { grid-template-columns: 1fr; gap: 32px; }
+      .case-study.reverse { direction: ltr; }
+      .resume-body { grid-template-columns: 1fr; gap: 0; }
+      .resume-header { padding: 60px 0 32px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .cs-number { font-size: 3rem; }
+      footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+      #cs1 [style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+      #cs1 [style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
+      #cs1 [style*="grid-template-columns:repeat(5,1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+      #cs1 [style*="grid-template-columns:1fr 1fr"]       { grid-template-columns: 1fr !important; }
+      #cs1 [style*="grid-template-columns:repeat(2,1fr)"] { grid-template-columns: 1fr !important; }
+      #cs1 [style*="max-width:66.7%"]                     { max-width: 100% !important; }
+      #cs1 [style*="padding:48px"]  { padding: 24px !important; }
+      #cs1 [style*="padding:40px"]  { padding: 24px !important; }
+      #cs1 [style*="padding:36px"]  { padding: 24px !important; }
+      #cs1 [style*="padding:32px;"] { padding: 20px !important; }
+      #cs1 [style*="margin-bottom:80px"] { margin-bottom: 48px !important; }
+    }
+    /* Small mobile */
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+      .hero-desc  { font-size: 1rem; }
+      .hero-cta   { flex-direction: column; }
+      .hero-cta .btn { width: 100%; justify-content: center; }
+      .about-intro { font-size: 1.5rem; }
+      .projects-hero h1 { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+      .section-title    { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+      #cs1 [style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: 1fr !important; }
+      #cs1 [style*="grid-template-columns:repeat(5,1fr)"] { grid-template-columns: 1fr !important; }
+      #cs1 [style*="grid-template-columns:repeat(2,1fr)"] { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ─── NAV ─────────────────────────────────────── -->
+  <nav>
+    <div class="nav-logo">Cat<span>.</span></div>
+    <div class="nav-links" id="navLinks">
+      <a href="#" onclick="showPage('home')" id="nav-home" class="active">Home</a>
+      <a href="#" onclick="showPage('about')" id="nav-about">About</a>
+      <a href="#" onclick="showPage('projects')" id="nav-projects">Projects</a>
+      <a href="#" onclick="showPage('cs1')" id="nav-cs1" style="display:none;">CS1</a>
+      <a href="#" onclick="showPage('resume')" id="nav-resume">Resume</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- HOME PAGE                                       -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="page active" id="home">
+    <div class="container">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-eyebrow">UI/UX Designer &amp; Researcher</div>
+          <h1 class="hero-title">
+            <span class="block">Designing</span>
+            <span class="block">experiences</span>
+            <span class="block">that <span class="underlined highlight">matter</span>.</span>
+          </h1>
+          <p class="hero-desc">
+            Hi, I'm Cat — a UI/UX designer and Systems &amp; Experience Design Manager at the University of Miami. I'm pursuing my M.S. in Experience &amp; Information Design and I create human-centered experiences that are intuitive, intentional, and a little bit fun.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" onclick="showPage('projects')">View My Work →</a>
+            <a class="btn btn-outline" onclick="showPage('about')">About Me</a>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-graphic">
+            <div class="hero-blob b1"></div>
+            <div class="hero-blob b2"></div>
+            <div class="hero-photo-wrap">
+              <img src="images/image-02.jpg" alt="Catherine Carter — UI/UX Designer" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marquee -->
+    <div class="marquee-strip">
+      <div class="marquee-inner" id="marqueeInner">
+        <span class="marquee-item">UI/UX Design<span class="dot">✦</span></span>
+        <span class="marquee-item">User Research<span class="dot">✦</span></span>
+        <span class="marquee-item">Information Architecture<span class="dot">✦</span></span>
+        <span class="marquee-item">Prototyping<span class="dot">✦</span></span>
+        <span class="marquee-item">Interaction Design<span class="dot">✦</span></span>
+        <span class="marquee-item">Experience Design<span class="dot">✦</span></span>
+        <span class="marquee-item">Figma<span class="dot">✦</span></span>
+        <span class="marquee-item">Design Systems<span class="dot">✦</span></span>
+        <span class="marquee-item">UI/UX Design<span class="dot">✦</span></span>
+        <span class="marquee-item">User Research<span class="dot">✦</span></span>
+        <span class="marquee-item">Information Architecture<span class="dot">✦</span></span>
+        <span class="marquee-item">Prototyping<span class="dot">✦</span></span>
+        <span class="marquee-item">Interaction Design<span class="dot">✦</span></span>
+        <span class="marquee-item">Experience Design<span class="dot">✦</span></span>
+        <span class="marquee-item">Figma<span class="dot">✦</span></span>
+        <span class="marquee-item">Design Systems<span class="dot">✦</span></span>
+      </div>
+    </div>
+
+    <!-- Featured work -->
+    <div class="container">
+      <div class="home-work">
+        <div class="section-header">
+          <h2 class="section-title">Featured Work</h2>
+          <a class="link-arrow" onclick="showPage('projects')">All Projects</a>
+        </div>
+        <div class="home-cards">
+          <div class="proj-card" onclick="showPage('cs1')">
+            <div class="proj-card-thumb lime">01</div>
+            <div class="proj-card-body">
+              <div class="proj-card-label">Human Centered Design · Case Study</div>
+              <div class="proj-card-title">Body-Worn Camera Interface</div>
+              <p class="proj-card-desc">Redesigning a police body-worn camera interface so new and less tech-savvy officers can navigate it confidently under pressure — reducing recording errors and device misuse.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ABOUT PAGE                                      -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="page" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left">
+          <div class="about-avatar">
+            <img src="images/image-01.jpg" alt="Catherine Carter — UI/UX Designer" />
+          </div>
+        </div>
+        <div class="about-right">
+          <div class="tag">About Me</div>
+          <h2 class="about-intro">
+            I design for <em>people</em>, not just screens.
+          </h2>
+          <div class="about-body">
+            <p>
+              I'm Cat Carter, a UI/UX designer, Google-certified UX professional, and Manager with a focus on Systems and Experience Design at the University of Miami's Miami Herbert Business School. I'm currently pursuing my M.S. in Experience &amp; Information Design at UM, where I'm deepening my practice at the intersection of research, systems thinking, and human-centered design.
+            </p>
+            <p>
+              My work spans the full design spectrum — from mapping complex information architectures to prototyping real-time interactive systems. I've designed accreditation tracking systems, conference registration experiences for 500+ attendees, and live event engagement tools. I bring a systems perspective to every project: understanding how people, processes, and interfaces work together.
+            </p>
+            <p>
+              I believe great design is never just visual — it's structural, empathetic, and grounded in real user needs. When I'm not in Figma, I'm probably exploring Miami's creative scene, geeking out over data visualization, or finding design inspiration in the most unexpected places.
+            </p>
+          </div>
+
+          <div class="about-skills">
+            <h3>Skills &amp; Tools</h3>
+            <div class="skill-chips">
+              <span class="chip">Figma</span>
+              <span class="chip">User Research</span>
+              <span class="chip">Wireframing</span>
+              <span class="chip">Prototyping</span>
+              <span class="chip">User Testing</span>
+              <span class="chip">Service Design</span>
+              <span class="chip">Data Visualization</span>
+              <span class="chip">HTML / CSS</span>
+              <span class="chip">Adobe XD</span>
+              <span class="chip">Illustrator</span>
+              <span class="chip">Salesforce</span>
+              <span class="chip">Qualtrics</span>
+              <span class="chip">GitHub</span>
+              <span class="chip">Canva</span>
+            </div>
+          </div>
+
+          <div class="about-education">
+            <h3 style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0;font-family:var(--font-h);font-weight:600;">Education</h3>
+            <div class="edu-item">
+              <div class="edu-year">2024–<br>2027</div>
+              <div>
+                <div class="edu-name">M.S. Experience &amp; Information Design</div>
+                <div class="edu-school">University of Miami · Coral Gables, FL · GPA 3.5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- PROJECTS PAGE                                   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="page" id="projects">
+    <div class="container">
+      <div class="projects-hero">
+        <div class="tag">Case Studies</div>
+        <h1>Selected Work<span style="color:var(--accent1);">.</span></h1>
+        <p>A student project exploring user-centered design, research, and interaction — with more on the way.</p>
+      </div>
+
+      <div class="projects-list">
+        <!-- Case Study 01 -->
+        <div class="case-study">
+          <div class="cs-meta">
+            <div class="cs-number">01</div>
+            <h2 class="cs-title">Body-Worn Camera Interface: Redesigning Police Accountability</h2>
+            <p class="cs-desc">
+              New and less tech-savvy officers struggle to navigate body-worn camera interfaces during high-pressure situations — leading to recording errors, device misuse, and reduced accountability. This 7-week Human Centered Design project redesigned the BWC interface from the ground up, with 3 rounds of user testing and a full Figma prototype.
+            </p>
+            <div class="cs-tags">
+              <span class="cs-tag">Human Centered Design</span>
+              <span class="cs-tag">UX Research</span>
+              <span class="cs-tag">Interface Design</span>
+              <span class="cs-tag">Figma</span>
+              <span class="cs-tag">Prototyping</span>
+            </div>
+            <a class="btn btn-primary" onclick="showPage('cs1'); return false;" href="#" style="display:inline-flex;">View Case Study →</a>
+          </div>
+          <div class="cs-visual lime" style="padding:0;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;">
+            <img src="images/image-03.png" alt="BWC Interface — Home Screen" style="width:auto;height:100%;max-height:420px;object-fit:contain;display:block;" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- More coming soon note -->
+      <div style="text-align:center;padding:48px 0 80px;border-top:1.5px solid var(--border);">
+        <div class="tag" style="margin-bottom:16px;">Coming Soon</div>
+        <h3 style="font-size:1.5rem;margin-bottom:12px;">More work in progress.</h3>
+        <p style="color:var(--muted);font-size:0.95rem;max-width:400px;margin:0 auto;">I'm actively working on new case studies as part of my Masters program. Check back soon!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- RESUME PAGE                                     -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="page" id="resume">
+    <div class="container">
+      <div class="resume-header">
+        <div>
+          <div class="tag">Résumé</div>
+          <h1>Cat Carter<span style="color:var(--accent1);">.</span></h1>
+        </div>
+        <a class="btn btn-primary" href="#">Download PDF ↓</a>
+      </div>
+
+      <div class="resume-body">
+        <!-- Sidebar -->
+        <div class="resume-sidebar">
+          <div class="resume-section">
+            <div class="resume-section-label">Contact</div>
+            <div class="contact-list">
+              <div class="contact-item">
+                <div class="contact-icon">✉</div>
+                cvcarter@miami.edu
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon"></div>
+                <a href="https://www.linkedin.com/in/catherinevcarter/" target="_blank" style="color:inherit;">linkedin.com/in/catherinevcarter</a>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon"></div>
+                Miami, FL
+              </div>
+            </div>
+          </div>
+
+          <div class="resume-section">
+            <div class="resume-section-label">Skills</div>
+            <div class="skill-bar-list">
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">Figma <span>Comfortable</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill accent" style="width:65%"></div></div>
+              </div>
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">Wireframing &amp; Prototyping <span>Comfortable</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill accent" style="width:62%"></div></div>
+              </div>
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">User Research <span>Developing</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="width:48%"></div></div>
+              </div>
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">Service Design <span>Familiar</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="width:35%"></div></div>
+              </div>
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">Data Visualization <span>Learning</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="width:25%"></div></div>
+              </div>
+              <div class="skill-bar-item">
+                <div class="skill-bar-label">HTML / CSS <span>Learning</span></div>
+                <div class="skill-bar-track"><div class="skill-bar-fill" style="width:20%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="resume-section">
+            <div class="resume-section-label">Tools &amp; Programs</div>
+            <div class="skill-chips">
+              <span class="chip">Figma</span>
+              <span class="chip">Adobe XD</span>
+              <span class="chip">Illustrator</span>
+              <span class="chip">Canva</span>
+              <span class="chip">Salesforce</span>
+              <span class="chip">GitHub</span>
+              <span class="chip">Qualtrics</span>
+              <span class="chip">Asana</span>
+              <span class="chip">Mailchimp</span>
+              <span class="chip">CVENT</span>
+              <span class="chip">Workday</span>
+              <span class="chip">Cascade</span>
+              <span class="chip">Microsoft Suite</span>
+              <span class="chip">Google Suite</span>
+            </div>
+
+          </div>
+
+          <div class="resume-section">
+            <div class="resume-section-label">AI Tools</div>
+            <div class="skill-chips">
+              <span class="chip">Claude Code</span>
+              <span class="chip">Cursor</span>
+              <span class="chip">Gemini</span>
+              <span class="chip">Figma Make</span>
+            </div>
+          </div>
+
+          <div class="resume-section">
+            <div class="resume-section-label">Certifications</div>
+            <div class="contact-list">
+              <div class="contact-item">
+                <div class="contact-icon"></div>
+                Google UX Design Certificate
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main -->
+        <div class="resume-main">
+          <div class="resume-section">
+            <div class="resume-section-label">Education</div>
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div class="resume-item-title">Master of Science, Experience &amp; Information Design</div>
+                <div class="resume-item-date">Expected May 2027</div>
+              </div>
+              <div class="resume-item-sub">University of Miami · Coral Gables, FL</div>
+              <div class="resume-item-desc">GPA: 3.5 &nbsp;·&nbsp; Focusing on human-centered design, information architecture, interaction design, and service design methods.</div>
+            </div>
+          </div>
+
+          <div class="resume-section">
+            <div class="resume-section-label">Experience</div>
+
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div class="resume-item-title">Manager — Systems &amp; Experience Design</div>
+                <div class="resume-item-date">July 2021 – Present</div>
+              </div>
+              <div class="resume-item-sub">University of Miami · Miami Herbert Business School · Coral Gables, FL (Hybrid)</div>
+              <div class="resume-item-desc">
+                Designed and implemented an accreditation information system to track complex faculty and student data across two graduate programs, improving data accuracy, accessibility, and audit readiness. Developed a real-time attendee question submission system that enabled moderation and improved speaker–audience interaction during live events. Designed and iterated on a conference registration experience for 500+ annual attendees, improving information hierarchy and user flow. Led research and benchmarking by analyzing peer institution workflows to inform system design and best practices.
+              </div>
+            </div>
+
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div class="resume-item-title">Medical Services Coordinator</div>
+                <div class="resume-item-date">Jan 2021 – July 2021</div>
+              </div>
+              <div class="resume-item-sub">Pearl Interactive · Remote</div>
+              <div class="resume-item-desc">
+                Supported users across multiple digital systems, resolving issues related to healthcare services and appointments. Documented user interactions and system actions to ensure continuity across channels. Navigated complex workflows while maintaining accuracy and user empathy in high-volume environments.
+              </div>
+            </div>
+
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div class="resume-item-title">Administrative Lead / Office Manager</div>
+                <div class="resume-item-date">Feb 2015 – Apr 2020</div>
+              </div>
+              <div class="resume-item-sub">MD NOW Urgent Care · Hallandale Beach, FL</div>
+              <div class="resume-item-desc">
+                Led operational workflows and staff scheduling for a high-volume healthcare environment averaging 50+ patients daily. Facilitated daily and monthly staff communication sessions to align teams and improve service delivery. Designed internal tracking systems for billing and coding errors, improving issue resolution efficiency. Coordinated community outreach and information presentations to improve patient awareness and engagement.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- CASE STUDY 01 PAGE                                        -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div class="page" id="cs1">
+    <div class="container">
+
+      <!-- Back nav -->
+      <div style="padding:32px 0 0;">
+        <a href="#" onclick="showPage('projects'); return false;" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-h);font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--fg)'" onmouseout="this.style.color='var(--muted)'">← Back to Projects</a>
+      </div>
+
+      <!-- Hero -->
+      <div style="padding:48px 0 40px;border-bottom:1.5px solid var(--border);margin-bottom:64px;">
+        <div class="tag">Human Centered Design · Spring 2026</div>
+        <h1 style="font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px;">Body-Worn Camera Interface:<br><span style="color:var(--muted);">Redesigning Police Accountability</span></h1>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:680px;line-height:1.75;margin-bottom:32px;">Redesigning the body-worn camera interface so that new and less tech-savvy first responders can navigate it confidently during high-pressure situations — reducing device misuse, recording errors, and apprehension about the technology.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <span style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:var(--font-h);font-weight:500;padding:8px 16px;">👥 Team: Neighborhood Watch</span>
+          <span style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:var(--font-h);font-weight:500;padding:8px 16px;">📚 Course: CIM 622 Human Centered Design</span>
+          <span style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:var(--font-h);font-weight:500;padding:8px 16px;">📷 Platform: Body-Worn Camera</span>
+          <span style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;font-size:0.82rem;font-family:var(--font-h);font-weight:500;padding:8px 16px;">⏱ 7 Weeks · Jan – Mar 2026</span>
+        </div>
+      </div>
+
+      <!-- Stats band -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-bottom:80px;">
+        <div style="text-align:center;padding:32px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+          <div style="font-family:var(--font-h);font-size:2.8rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">42%</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">of footage currently released to public</div>
+        </div>
+        <div style="text-align:center;padding:32px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+          <div style="font-family:var(--font-h);font-size:2.8rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">High</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">cognitive load on officers during incidents</div>
+        </div>
+        <div style="text-align:center;padding:32px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+          <div style="font-family:var(--font-h);font-size:2.8rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">3</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">rounds of user testing &amp; iteration</div>
+        </div>
+        <div style="text-align:center;padding:32px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+          <div style="font-family:var(--font-h);font-size:2.8rem;font-weight:800;letter-spacing:-0.04em;color:var(--fg);">4</div>
+          <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">team members</div>
+        </div>
+      </div>
+
+      <!-- ── MY ROLE ─────────────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Contributions</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">My Role &amp; Contributions</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:40px;">As a member of the Neighborhood Watch team, I led the interface design for several core features, contributed to user research and task documentation, and prototyped the physical device throughout this midterm project.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:40px;">
+          <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <h3 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:16px;">Interface Design</h3>
+            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;">
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Full settings menu (volume, brightness, text size)</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Programmable physical button configuration screen</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Enable/Disable Covert (Incognito) Mode feature</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Media library and gallery interface</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Camera function screen</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Physical device prototype</li>
+            </ul>
+          </div>
+          <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <h3 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:6px;">Future Opportunities</h3>
+            <p style="font-size:0.78rem;color:var(--muted);line-height:1.5;margin-bottom:16px;">Ideas for the next iteration, informed by user testing and professor feedback.</p>
+            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:12px;">
+              <li style="font-size:0.85rem;color:var(--muted);padding-left:16px;position:relative;">
+                <span style="position:absolute;left:0;color:var(--accent1);">→</span>
+                <strong style="color:var(--fg);font-family:var(--font-h);">AI-Assisted Incident Tagging</strong><br/>
+                <span style="font-size:0.78rem;">Speech-to-text support that auto-tags recordings with incident type, location, and officer ID as footage is captured.</span>
+              </li>
+              <li style="font-size:0.85rem;color:var(--muted);padding-left:16px;position:relative;">
+                <span style="position:absolute;left:0;color:var(--accent1);">→</span>
+                <strong style="color:var(--fg);font-family:var(--font-h);">Smart Media Search &amp; Filters</strong><br/>
+                <span style="font-size:0.78rem;">Search and filter recordings by date, location, tag, or incident type — making evidence retrieval fast in high-pressure moments.</span>
+              </li>
+              <li style="font-size:0.85rem;color:var(--muted);padding-left:16px;position:relative;">
+                <span style="position:absolute;left:0;color:var(--accent1);">→</span>
+                <strong style="color:var(--fg);font-family:var(--font-h);">Push-to-Talk Redesign</strong><br/>
+                <span style="font-size:0.78rem;">A dedicated PTT screen with clear active/inactive state indicators and haptic confirmation — essential for field use.</span>
+              </li>
+              <li style="font-size:0.85rem;color:var(--muted);padding-left:16px;position:relative;">
+                <span style="position:absolute;left:0;color:var(--accent1);">→</span>
+                <strong style="color:var(--fg);font-family:var(--font-h);">Physical Button State Feedback</strong><br/>
+                <span style="font-size:0.78rem;">Visual and haptic cues that confirm when a physical button has been pressed or programmed, reducing uncertainty in the field.</span>
+              </li>
+              <li style="font-size:0.85rem;color:var(--muted);padding-left:16px;position:relative;">
+                <span style="position:absolute;left:0;color:var(--accent1);">→</span>
+                <strong style="color:var(--fg);font-family:var(--font-h);">System Health Dashboard</strong><br/>
+                <span style="font-size:0.78rem;">A glanceable status view showing battery level, storage capacity, sync status, and connectivity — all critical before going on shift.</span>
+              </li>
+            </ul>
+          </div>
+          <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <h3 style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:16px;">Research &amp; Documentation</h3>
+            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;">
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>User feedback gathering and organization</li>
+              <li style="font-size:0.88rem;color:var(--muted);padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Concept maps and ideation sketches</li>
+            </ul>
+            <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+              <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Worked collaboratively with the full team on research, ideation, and iterative design refinements throughout the project lifecycle.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team -->
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+          <span style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Team:</span>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:6px 16px 6px 8px;">
+              <div style="width:28px;height:28px;background:var(--accent2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:0.72rem;font-weight:700;">CC</div>
+              <span style="font-size:0.85rem;font-weight:600;">Catherine Carter</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:6px 16px 6px 8px;">
+              <div style="width:28px;height:28px;background:var(--surface);border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:0.72rem;font-weight:700;">MH</div>
+              <span style="font-size:0.85rem;">Ma'at Hetep</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:6px 16px 6px 8px;">
+              <div style="width:28px;height:28px;background:var(--surface);border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:0.72rem;font-weight:700;">VO</div>
+              <span style="font-size:0.85rem;">Vivian Orellana</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;background:var(--surface);border:1.5px solid var(--border);border-radius:100px;padding:6px 16px 6px 8px;">
+              <div style="width:28px;height:28px;background:var(--surface);border:1.5px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:0.72rem;font-weight:700;">ML</div>
+              <span style="font-size:0.85rem;">Matt Liff</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── SKETCHES & CONCEPT MAP ──────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Ideation</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Sketches &amp; Concept Map</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:40px;">Hand-drawn sketches and concept maps created during the ideation phase to explore interface layouts and map out system features.</p>
+
+        <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Interface Sketches</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px;">
+          <figure style="margin:0;"><img src="images/image-04.jpg" alt="Interface sketches page 1" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Sketches — Page 1</figcaption></figure>
+          <figure style="margin:0;"><img src="images/image-05.jpg" alt="Interface sketches page 2" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Sketches — Page 2</figcaption></figure>
+        </div>
+
+        <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Concept Map</h3>
+        <div style="margin-bottom:8px;">
+          <figure style="margin:0;"><img src="images/image-06.jpg" alt="Body Cam User Interface Concept Map" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Body Cam User Interface Concept Map</figcaption></figure>
+        </div>
+      </div>
+
+      <!-- ── THE PROBLEM ──────────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;padding:48px;background:var(--fg);color:var(--bg);border-radius:20px;">
+        <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:12px;">The Problem</div>
+        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:20px;line-height:1.2;">Despite increasing mandates for body-worn cameras, new officers find them nearly impossible to use under pressure.</h2>
+        <p style="font-size:1rem;opacity:0.75;line-height:1.75;max-width:700px;margin-bottom:32px;">This complexity leads to device misuse, recording errors at pivotal moments, difficulty accessing data, and increased apprehension about the technology — directly undermining the accountability these cameras are meant to provide.</p>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+          <div style="padding:20px;background:rgba(255,255,255,0.06);border-radius:12px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:1.1rem;margin-bottom:8px;">📊</div>
+            <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Selective Evidence Release</div>
+            <p style="font-size:0.82rem;opacity:0.65;line-height:1.6;">Only 42% of body camera footage is currently released to the public, limiting accountability and transparency.</p>
+          </div>
+          <div style="padding:20px;background:rgba(255,255,255,0.06);border-radius:12px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:1.1rem;margin-bottom:8px;">🧠</div>
+            <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Cognitive Overload</div>
+            <p style="font-size:0.82rem;opacity:0.65;line-height:1.6;">Officers struggle with complex interfaces during high-stress situations, diverting focus from the incident itself.</p>
+          </div>
+          <div style="padding:20px;background:rgba(255,255,255,0.06);border-radius:12px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:1.1rem;margin-bottom:8px;">🔍</div>
+            <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Subjective Interpretation</div>
+            <p style="font-size:0.82rem;opacity:0.65;line-height:1.6;">Footage review lacks contextual clarity and metadata, leading to vastly different assessments by reviewers.</p>
+          </div>
+          <div style="padding:20px;background:rgba(255,255,255,0.06);border-radius:12px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:1.1rem;margin-bottom:8px;">⚙️</div>
+            <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Limited Functionality</div>
+            <p style="font-size:0.82rem;opacity:0.65;line-height:1.6;">Current systems lack features for evidence organization, quick reference, and contextual metadata tagging.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RESEARCH ─────────────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Discovery</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Research &amp; Discovery</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:680px;line-height:1.75;margin-bottom:48px;">We conducted extensive secondary research to understand the historical context, current challenges, and design opportunities in body-worn camera technology.</p>
+
+        <!-- Background & Adoption -->
+        <div style="margin-bottom:40px;">
+          <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Background &amp; Adoption</h3>
+          <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <p style="font-size:0.92rem;line-height:1.8;color:var(--fg);margin-bottom:16px;">Body-worn cameras used by law enforcement began in the U.S. as a pilot program in 2012 in Phoenix and Mesa, Arizona, and Rialto, California. The Rialto pilot saw significant success — reporting an <strong>88% reduction in complaints against law enforcement officers</strong> (American Police Officers Alliance, 2018) — but the program spread slowly due to cost concerns.</p>
+            <p style="font-size:0.92rem;line-height:1.8;color:var(--fg);margin-bottom:16px;">Adoption accelerated in 2014 following the killing of Michael Brown in Ferguson, Missouri. President Obama proposed federal reimbursement for half the implementation cost, and Attorney General Loretta E. Lynch announced $28 million in grants across 32 states to expand BWC use (US Department of Justice, 2015).</p>
+            <p style="font-size:0.92rem;line-height:1.8;color:var(--fg);margin-bottom:16px;">In 2021, questions about effectiveness still lingered. Portland City Commissioner Jo Ann Hardesty stated: <em>"I am reluctant to make an expensive investment in body-worn cameras because they have failed to provide accountability to other police departments and have not reduced police use of force."</em> (Iboshi, 2021).</p>
+            <p style="font-size:0.92rem;line-height:1.8;color:var(--fg);margin-bottom:0;">Today, more than half of all states have mandated BWC use by law enforcement. Cameras are more affordable and technology has improved, but significant hurdles remain: <strong>data storage, training, and protocols</strong> (The Editors of ProCon, 2025).</p>
+          </div>
+        </div>
+
+        <!-- Usability & Training Challenges -->
+        <div style="margin-bottom:40px;">
+          <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Usability &amp; Training Challenges</h3>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="padding:24px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;display:grid;grid-template-columns:4px 1fr;gap:20px;align-items:start;">
+              <div style="width:4px;height:100%;background:var(--accent1);border-radius:2px;min-height:40px;"></div>
+              <div>
+                <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:6px;">Improper Tagging = Lost Evidence</div>
+                <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin:0;">Tagging is typically done by the investigating officer in the field, or at the end of each shift prior to uploading. When done improperly or omitted, it can result in the loss of vital evidence — including accidental deletion after upload (Gehring, 2023).</p>
+              </div>
+            </div>
+            <div style="padding:24px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;display:grid;grid-template-columns:4px 1fr;gap:20px;align-items:start;">
+              <div style="width:4px;height:100%;background:var(--accent1);border-radius:2px;min-height:40px;"></div>
+              <div>
+                <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:6px;">Design Causes Misuse — Not Just Training</div>
+                <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin:0;">Accidental activation and premature deactivation stem from poor button placement. Research shows that mounting position and activation methods greatly affect usability — suggesting these errors don't come solely from lack of training, but from interfaces that fail to account for stress and divided attention (Suss et al., 2018).</p>
+              </div>
+            </div>
+            <div style="padding:24px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;display:grid;grid-template-columns:4px 1fr;gap:20px;align-items:start;">
+              <div style="width:4px;height:100%;background:var(--accent2);border-radius:2px;min-height:40px;"></div>
+              <div>
+                <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:6px;">AI Activation Reduces Mental Load</div>
+                <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin:0;">New research shows that automated and AI-assisted activation systems reduce the officer's mental load during high-stress situations and improve recording consistency (Journal of Criminal Justice, 2025). Despite widespread implementation, a significant gap persists between enforcement guidelines and the human-centered usability of these devices.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design Precedents -->
+        <div style="margin-bottom:40px;">
+          <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Design Precedents</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+              <div style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:4px;">Axon Body 4 <span style="font-weight:400;color:var(--muted);font-size:0.82rem;">(2023)</span></div>
+              <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:16px;">Industry Standard Law Enforcement Camera</div>
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:16px;">Features a clear indicator light showing when it is on and recording, and a battery-life display visible without removing the device — providing immediate feedback designed for high-stress situations.</p>
+              <div style="padding:14px 16px;background:rgba(0,0,0,0.04);border-radius:8px;font-size:0.8rem;line-height:1.6;color:var(--fg);border-left:3px solid var(--accent1);">
+                <strong>Design Takeaway:</strong> High-visibility status indicators and accessible hardware controls are essential for real-world law enforcement use.
+              </div>
+            </div>
+            <div style="padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+              <div style="font-family:var(--font-h);font-size:1rem;font-weight:700;margin-bottom:4px;">GoPro Hero7</div>
+              <div style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:16px;">Consumer-Grade Intuitive Design</div>
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.7;margin-bottom:16px;">Touchscreen gestures like swiping and long-pressing are familiar to smartphone users, reducing the learning curve. Demonstrates effective use of limited screen space with large, clear indicator buttons.</p>
+              <div style="padding:14px 16px;background:rgba(0,0,0,0.04);border-radius:8px;font-size:0.8rem;line-height:1.6;color:var(--fg);border-left:3px solid var(--accent2);">
+                <strong>Design Takeaway:</strong> Familiar touch interactions and clear button affordances reduce cognitive load — directly inspiring the large button layout and swipe-down settings menu.
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:20px 24px;background:var(--fg);color:var(--bg);border-radius:12px;font-size:0.88rem;line-height:1.7;">
+            Both designs inform my project goals — from Axon's high-visibility indicators to GoPro's intuitive touch interface — demonstrating the intuitiveness and clean design I focused on throughout this project.
+          </div>
+        </div>
+
+        <!-- Citations -->
+        <div style="margin-bottom:0;">
+          <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Sources</h3>
+          <div style="padding:24px 32px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:8px;">
+            <a href="https://americanpoliceofficersalliance.com/police-use-body-worn-video-brief-history/" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">American Police Officers Alliance (2018) — Police Use of Body-Worn Video: A Brief History</a>
+            <a href="https://ballotpedia.org/Police_body_camera_use_in_the_United_States" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">Ballotpedia — Police Body Camera Use in the United States</a>
+            <a href="https://policerecordsmanagement.com/body-worn-video-tagging-errors-ramifications-prevention-correction/" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">Gehring (2023) — Body-Worn Video Tagging Errors: Ramifications, Prevention, Correction</a>
+            <a href="https://www.sciencedirect.com/science/article/pii/S0047235225000224" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">Journal of Criminal Justice (2025) — Automation and AI in Police Body-Worn Cameras</a>
+            <a href="https://www.federalregister.gov/documents/2022/05/31/2022-11810/advancing-effective-accountable-policing-and-criminal-justice-practices-to-enhance-public-trust-and" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">Federal Register (2022) — Biden Executive Order on Advancing Effective Policing</a>
+            <a href="https://www.axon.com/resources/police-body-cameras" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">Axon — Police Body Cameras: How It Started</a>
+            <a href="https://www.rstreet.org/research/the-past-present-and-future-of-police-body-cameras/" target="_blank" style="font-size:0.8rem;color:var(--muted);line-height:1.5;text-decoration:underline;text-underline-offset:3px;">R Street Institute — The Past, Present, and Future of Police Body Cameras</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── DESIGN PROCESS ───────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Design</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Design Process</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:48px;">Our human-centered design approach followed an iterative methodology from research through evaluation, ensuring user needs drove every decision.</p>
+
+        <!-- Process steps -->
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:48px;">
+          <div style="text-align:center;padding:24px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--accent2);margin-bottom:8px;">1</div>
+            <div style="font-family:var(--font-h);font-size:0.78rem;font-weight:700;margin-bottom:6px;">Research</div>
+            <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Reviewed Android UI Kit, studied existing body cam products</p>
+          </div>
+          <div style="text-align:center;padding:24px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--accent2);margin-bottom:8px;">2</div>
+            <div style="font-family:var(--font-h);font-size:0.78rem;font-weight:700;margin-bottom:6px;">Sketching</div>
+            <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Mini design sprint — sketched multiple interface layouts</p>
+          </div>
+          <div style="text-align:center;padding:24px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--accent2);margin-bottom:8px;">3</div>
+            <div style="font-family:var(--font-h);font-size:0.78rem;font-weight:700;margin-bottom:6px;">Wireframe</div>
+            <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Created wireframes from strongest sketch concepts</p>
+          </div>
+          <div style="text-align:center;padding:24px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--accent2);margin-bottom:8px;">4</div>
+            <div style="font-family:var(--font-h);font-size:0.78rem;font-weight:700;margin-bottom:6px;">User Testing</div>
+            <p style="font-size:0.75rem;color:var(--muted);line-height:1.5;">Two wireframe testing rounds, analyzed feedback between rounds</p>
+          </div>
+          <div style="text-align:center;padding:24px 16px;background:var(--fg);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:1.8rem;font-weight:800;color:var(--accent2);margin-bottom:8px;">5</div>
+            <div style="font-family:var(--font-h);font-size:0.78rem;font-weight:700;color:var(--bg);margin-bottom:6px;">Hi-Fi Prototype</div>
+            <p style="font-size:0.75rem;color:rgba(255,255,255,0.5);line-height:1.5;">Built final high-fidelity prototype in Figma</p>
+          </div>
+        </div>
+
+        <!-- Wireframes -->
+        <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;margin-top:48px;">Wireframes</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;">
+          <figure style="margin:0;"><img src="images/image-07.jpg" alt="Wireframe page 1" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Wireframe — Screen Set 1</figcaption></figure>
+          <figure style="margin:0;"><img src="images/image-08.jpg" alt="Wireframe page 2" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Wireframe — Screen Set 2</figcaption></figure>
+          <figure style="margin:0;"><img src="images/image-09.jpg" alt="Wireframe page 3" style="width:100%;border-radius:12px;border:1.5px solid var(--border);display:block;" /><figcaption style="font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;font-family:var(--font-h);font-weight:500;">Wireframe — Screen Set 3</figcaption></figure>
+        </div>
+
+        <!-- Design Philosophy Quote -->
+        <div style="padding:40px;background:var(--accent2);border-radius:16px;margin-bottom:48px;">
+          <div style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Design Philosophy</div>
+          <blockquote style="font-size:1.2rem;font-style:italic;line-height:1.6;font-weight:500;max-width:700px;">"I wanted to keep it minimalist while still providing buttons that gave a lot of information at a quick glance, such as the recording symbol, battery life, time, and notification bell."</blockquote>
+        </div>
+
+        <!-- Key Design Decisions -->
+        <h3 style="font-family:var(--font-h);font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Key Design Decisions</h3>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+          <div style="padding:24px;border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:8px;">Recording Must Be Effortless</div>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Start/stop recording via a physical slider button — a single action with immediate audio and visual feedback (beep + red light).</p>
+          </div>
+          <div style="padding:24px;border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:8px;">Settings Need Quick Access</div>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Swiping down from the top opens settings — a familiar gesture that avoids deep menu navigation during active use.</p>
+          </div>
+          <div style="padding:24px;border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:8px;">Covert Mode Is Safety-Critical</div>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Disabling indicator lights and sounds for stealth operations is essential and must be quickly toggled — assigned to my design scope.</p>
+          </div>
+          <div style="padding:24px;border:1.5px solid var(--border);border-radius:12px;">
+            <div style="font-family:var(--font-h);font-size:0.9rem;font-weight:700;margin-bottom:8px;">Tagging Requires Simplicity</div>
+            <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Officers can swipe left on a video and select from prepopulated tags — reducing the manual input that leads to evidence misplacement.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TESTING ───────────────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Evaluation</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Testing &amp; Iteration</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:40px;">Through structured feedback sessions and professor critique, we identified critical usability issues and refined our interface to better serve officers in high-stress field situations.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px;">
+          <div style="text-align:center;padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <div style="font-family:var(--font-h);font-size:3rem;font-weight:800;color:var(--accent1);">3</div>
+            <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">User Testing Rounds</div>
+            <div style="font-size:0.75rem;color:var(--muted);opacity:0.7;">Structured feedback with think-aloud protocol</div>
+          </div>
+          <div style="text-align:center;padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <div style="font-family:var(--font-h);font-size:3rem;font-weight:800;color:var(--accent1);">1</div>
+            <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">Professor Critique</div>
+            <div style="font-size:0.75rem;color:var(--muted);opacity:0.7;">Expert evaluation of physical button integration</div>
+          </div>
+          <div style="text-align:center;padding:32px;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;">
+            <div style="font-family:var(--font-h);font-size:3rem;font-weight:800;color:var(--accent1);">5</div>
+            <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">Core Tasks Tested</div>
+            <div style="font-size:0.75rem;color:var(--muted);opacity:0.7;">Login, recording, media review, emergency, settings</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── USER TESTING FEEDBACK ─────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">User Testing</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Feedback &amp; Design Decisions</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:48px;">Three rounds of participant testing and a professor critique surfaced key usability gaps — each finding directly shaped the final design.</p>
+
+        <!-- Round cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:40px;">
+
+          <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="background:var(--accent1);color:#fff;font-family:var(--font-h);font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:100px;">Round 1</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent1);margin-bottom:8px;">What Worked</div>
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Layout and visual hierarchy were clear. Buttons were easily identifiable and the overall structure felt organized.</p>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg);margin-bottom:8px;">Issues Found</div>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;">
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>"Ghost Mode" terminology was unclear</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>"+" button on home screen lacked clear meaning</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Emergency activation feedback wasn't strong enough</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="background:var(--accent1);color:#fff;font-family:var(--font-h);font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:100px;">Round 2</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent1);margin-bottom:8px;">What Worked</div>
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">UI clarity was appreciated. Media browsing felt intuitive to navigate.</p>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg);margin-bottom:8px;">Issues Found</div>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;">
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Ghost Mode still confusing across participants</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>No visible low battery warning</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Media page needed search &amp; tagging tools</li>
+              </ul>
+            </div>
+          </div>
+
+          <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="background:var(--accent1);color:#fff;font-family:var(--font-h);font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:100px;">Round 3</div>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent1);margin-bottom:8px;">What Worked</div>
+              <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Interface felt structured and readable. Videos were easy to locate.</p>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--fg);margin-bottom:8px;">Issues Found</div>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:6px;">
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Ghost Mode label unclear again</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>"+" button purpose still ambiguous</li>
+                <li style="font-size:0.82rem;color:var(--muted);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Desire for clearer feature categorization</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Professor feedback -->
+        <div style="background:#111;color:#fff;border-radius:16px;padding:36px;margin-bottom:40px;">
+          <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;">Professor Critique</div>
+          <p style="font-size:1rem;line-height:1.75;color:rgba(255,255,255,0.75);margin-bottom:24px;">Expert evaluation identified deeper structural gaps beyond terminology — pointing to missing system states, incomplete physical button integration, and the need for a fully-realized media library.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;">Key Issues</div>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Loading states not clearly communicated</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>PTT screen not properly designed</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Physical button behavior not fully prototyped</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Redundant on-screen controls for physical buttons</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;">Takeaways</div>
+              <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Media library must support search, tags &amp; metadata</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Visual state changes needed for programmed buttons</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Login screen should better demonstrate responsiveness</li>
+                <li style="font-size:0.82rem;color:rgba(255,255,255,0.65);padding-left:14px;position:relative;"><span style="position:absolute;left:0;color:var(--accent1);">→</span>Alert acknowledgment adds unnecessary friction</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design decisions made -->
+        <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:36px;">
+          <div style="font-family:var(--font-h);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;">Design Decisions Made</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">🕵️</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Renamed to Covert Mode</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">"Ghost Mode" caused confusion in all three rounds — renamed to "Covert Mode" for immediate clarity.</p>
+            </div>
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">🔍</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Media Search &amp; Tagging</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Added search bar, tag filtering, and AI-assisted speech-to-text tagging to the media library.</p>
+            </div>
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">📡</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Removed Live Broadcasting</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Participants saw no value in real-time broadcasting — removed to reduce cognitive load and complexity.</p>
+            </div>
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">🚨</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Stronger Emergency Feedback</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Emergency activation now includes visual confirmation, a clear message, and a persistent status indicator.</p>
+            </div>
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">🔲</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Clearer Action Buttons</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Replaced the ambiguous "+" button with clearly labeled action buttons to improve affordance.</p>
+            </div>
+            <div style="padding:20px;background:#fff;border:1.5px solid var(--border);border-radius:12px;">
+              <div style="font-size:1.4rem;margin-bottom:10px;">🔋</div>
+              <div style="font-family:var(--font-h);font-size:0.85rem;font-weight:700;margin-bottom:6px;">Visible System Status</div>
+              <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;">Added prominent low battery warnings and system status indicators throughout the interface.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BOTTOM CTA ─────────────────────────────────────────────────── -->
+
+      <!-- ── FINAL SCREENS ──────────────────────────────────────────────── -->
+      <div style="margin-bottom:80px;">
+        <div class="tag">Final Screens</div>
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:16px;">Prototype Screens</h2>
+        <p style="font-size:1.05rem;color:var(--muted);max-width:640px;line-height:1.75;margin-bottom:40px;">The final Figma prototype reflects three rounds of user testing and iterative refinement — optimized for clarity, speed, and low cognitive load in high-pressure situations.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
+          <div style="background:#111;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 20px;min-height:320px;">
+              <img src="images/image-10.png" alt="🌙 Dark Mode" style="width:auto;max-height:280px;max-width:100%;object-fit:contain;" />
+            </div>
+            <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">🏠 Home Screen</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);">Standby mode with last captured footage</div>
+            </div>
+          </div>
+          <div style="background:#111;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 20px;min-height:320px;">
+              <img src="images/image-11.png" alt="🕵️ Covert Mode" style="width:auto;max-height:280px;max-width:100%;object-fit:contain;" />
+            </div>
+            <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">🕵️ Covert Mode</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);">Discreet recording — no visible indicators</div>
+            </div>
+          </div>
+          <div style="background:#111;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 20px;min-height:320px;">
+              <img src="images/image-12.png" alt="⚙️ Settings" style="width:auto;max-height:280px;max-width:100%;object-fit:contain;" />
+            </div>
+            <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">⚙️ Settings</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);">Programmable buttons & display options</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:66.7%;margin:0 auto;">
+          <div style="background:#111;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 20px;min-height:320px;">
+              <img src="images/image-13.png" alt="🎙️ Audio" style="width:auto;max-height:280px;max-width:100%;object-fit:contain;" />
+            </div>
+            <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">🎙️ Audio</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);">Browse and play audio recordings</div>
+            </div>
+          </div>
+          <div style="background:#111;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;">
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:28px 20px;min-height:320px;">
+              <img src="images/image-14.png" alt="🎞️ Video Library" style="width:auto;max-height:280px;max-width:100%;object-fit:contain;" />
+            </div>
+            <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);">
+              <div style="font-family:var(--font-h);font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:3px;">🎞️ Video Library</div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.45);">Organised video media with metadata</div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+      <div style="text-align:center;padding:64px 0 80px;border-top:1.5px solid var(--border);">
+        <div class="tag" style="margin-bottom:16px;">Next Steps</div>
+        <h3 style="font-size:1.5rem;margin-bottom:12px;">View the Full Prototype</h3>
+        <p style="color:var(--muted);font-size:0.95rem;max-width:400px;margin:0 auto 24px;">Explore all screens and interactions in the Figma prototype, or head back to see more projects.</p>
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+          <a class="btn btn-primary" href="https://www.figma.com/proto/jVydzxXdPw1Zt0qtE8AQw3/Wireframes?node-id=1909-3646&t=MaCpNPjLgSTDCM0g-0&scaling=scale-down&content-scaling=fixed&page-id=1100%3A1019&starting-point-node-id=1909%3A3646&show-proto-sidebar=1&classId=4f2d857d-0931-485f-8fe6-3189345331d8&assignmentId=35b81af3-ad25-42cc-be21-e883399526de&submissionId=4cb209b6-0a53-a1e4-d614-d731c3ce81f1" target="_blank" style="display:inline-flex;">View Figma Prototype →</a>
+          <a class="btn btn-outline" onclick="showPage('projects'); return false;" href="#" style="display:inline-flex;">← All Projects</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <footer>
+      <span class="footer-copy">© 2026 Cat Carter. All rights reserved.</span>
+      <div class="footer-links">
+        <a href="mailto:cvcarter@miami.edu">Email</a>
+        <a href="https://www.linkedin.com/in/catherinevcarter/" target="_blank">LinkedIn</a>
+      </div>
+    </footer>
+
+  <!-- ─── JS ─────────────────────────────────────── -->
+  <script>
+    // ── Page routing ──────────────────────────────
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+      document.getElementById('hamburger').classList.toggle('open');
+    }
+    function showPage(id) {
+      document.getElementById('navLinks').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('open');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById('nav-' + id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return false;
+    }
+
+    // ── Cursor glow ───────────────────────────────
+    const glow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+    });
+  </script>
+</body>
+</html>}
