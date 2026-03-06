@@ -1,3 +1,4 @@
+
 /* ─── HAMBURGER BUTTON ───────────────────────────────────── */
 .hamburger {
   display: none;
@@ -109,3 +110,4 @@
   #cs1 [style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns: 1fr !important; }
   #cs1 [style*="grid-template-columns:repeat(5,1fr)"] { grid-template-columns: 1fr !important; }
   #cs1 [style*="grid-template-columns:repeat(2,1fr)"] { grid-template-columns: 1fr !important; }
+}
